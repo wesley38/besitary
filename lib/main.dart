@@ -30,13 +30,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primaryColor: kprimary,
-        primaryColorDark: kprimaryDark,
-        primaryColorLight: kprimaryLight,
-        appBarTheme: _appbartheme,
-        backgroundColor: ksecondary,
-        buttonTheme: _buttontheme,
-      ),
+          primaryColor: kprimary,
+          primaryColorDark: kprimaryDark,
+          primaryColorLight: kprimaryLight,
+          appBarTheme: _appbartheme,
+          backgroundColor: ksecondary,
+          elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+            primary: ksecondary,
+            onPrimary: ktextonS,
+          ))),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
