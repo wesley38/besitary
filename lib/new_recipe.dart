@@ -70,7 +70,35 @@ class _NewRecipeFormState extends State<NewRecipeForm> {
       key: _formKey,
       child: ListView(
         children: <Widget>[
+          Column(
+            // Add photo button
+            children: [
+              CircleAvatar(
+                radius: 35,
+                backgroundColor: ksecondary,
+                child: IconButton(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.photo_camera,
+                    color: kprimary,
+                    size: 30.0,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 5.0,
+              ),
+              const Text(
+                "Add photo",
+                style: TextStyle(fontSize: 16.0),
+              )
+            ],
+          ),
+          const SizedBox(
+            height: 20.0,
+          ),
           TextFormField(
+            // Recipe name field
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return "Please enter a recipe name";
@@ -87,9 +115,10 @@ class _NewRecipeFormState extends State<NewRecipeForm> {
             cursorColor: kprimaryDark,
           ),
           const SizedBox(
-            height: 16.0,
+            height: 20.0,
           ),
           TextFormField(
+            // Recipe description field
             decoration: createInput(
                 "Description",
                 const Icon(
