@@ -46,22 +46,21 @@ class _NewRecipeFormState extends State<NewRecipeForm> {
   );
 
   // Generate input decoration
-  InputDecoration createInput(String inputName) {
+  InputDecoration createInput(String inputName, Icon icon, String? helperText) {
     return InputDecoration(
-        labelText: inputName,
-        border: const OutlineInputBorder(),
-        icon: const Icon(
-          Icons.restaurant,
-          color: ksecondaryDark,
-        ),
-        enabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: kprimaryLight),
-        ),
-        focusColor: kprimaryDark,
-        focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: kprimaryDark, width: 2.0),
-        ),
-        labelStyle: const TextStyle(color: kprimaryDark));
+      labelText: inputName,
+      border: const OutlineInputBorder(),
+      icon: icon,
+      enabledBorder: const OutlineInputBorder(
+        borderSide: BorderSide(color: kprimaryLight),
+      ),
+      focusColor: kprimaryDark,
+      focusedBorder: const OutlineInputBorder(
+        borderSide: BorderSide(color: kprimaryDark, width: 2.0),
+      ),
+      labelStyle: const TextStyle(color: kprimary),
+      helperText: helperText,
+    );
   }
 
   // Form to input new recipe
@@ -78,8 +77,29 @@ class _NewRecipeFormState extends State<NewRecipeForm> {
               }
               return null;
             },
-            decoration: createInput("Recipe Name"),
+            decoration: createInput(
+                "Recipe Name",
+                const Icon(
+                  Icons.restaurant,
+                  color: ksecondaryDark,
+                ),
+                null),
             cursorColor: kprimaryDark,
+          ),
+          const SizedBox(
+            height: 16.0,
+          ),
+          TextFormField(
+            decoration: createInput(
+                "Description",
+                const Icon(
+                  Icons.description,
+                  color: ksecondaryDark,
+                ),
+                "Optional"),
+            cursorColor: kprimaryDark,
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
           ),
           ElevatedButton(
             onPressed: () {
