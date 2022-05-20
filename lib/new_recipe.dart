@@ -15,14 +15,17 @@ class _NewRecipePageState extends State<NewRecipePage> {
   @override
   Widget build(BuildContext context) {
     // Page has an AppBar and padding around the new recipe form
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text("New Recipe"),
-        ),
-        body: const Padding(
-          padding: EdgeInsets.fromLTRB(7.0, 9.0, 7.0, 9.0),
-          child: NewRecipeForm(),
-        ));
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+          appBar: AppBar(
+            title: const Text("New Recipe"),
+          ),
+          body: const Padding(
+            padding: EdgeInsets.fromLTRB(7.0, 9.0, 7.0, 9.0),
+            child: NewRecipeForm(),
+          )),
+    );
   }
 }
 
@@ -56,7 +59,7 @@ class _NewRecipeFormState extends State<NewRecipeForm> {
         ),
         focusColor: kprimaryDark,
         focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: kprimaryDark),
+          borderSide: BorderSide(color: kprimaryDark, width: 2.0),
         ),
         labelStyle: const TextStyle(color: kprimaryDark));
   }
@@ -76,6 +79,7 @@ class _NewRecipeFormState extends State<NewRecipeForm> {
               return null;
             },
             decoration: createInput("Recipe Name"),
+            cursorColor: kprimaryDark,
           ),
           ElevatedButton(
             onPressed: () {
