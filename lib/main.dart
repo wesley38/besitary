@@ -34,11 +34,16 @@ class MyApp extends StatelessWidget {
         primaryColorDark: kprimaryDark,
         primaryColorLight: kprimaryLight,
         appBarTheme: _appbartheme,
-        backgroundColor: ksecondary,
+        backgroundColor: Colors.black,
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             primary: ksecondary,
             onPrimary: ktextonS,
+          ),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            primary: ktextonS,
           ),
         ),
       ),
