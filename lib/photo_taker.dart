@@ -23,42 +23,29 @@ class _NewPhotoState extends State<NewPhoto> {
     try {
       final image = await ImagePicker().pickImage(source: source);
       if (image == null) return;
-
+      // Storing selected / taken image
       final imageTemporary = File(image.path);
       setState(() => this.image = imageTemporary);
-      hidePhotoOptions();
+
+      // Closes photo options menu after widget tree rebuilt.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pop(context);
+      });
     } on PlatformException catch (e) {
       // TODO: Create UI to let user know of exception.
       print("Failed to pick image $e");
     }
   }
 
-  // Handles a tap outside overlay menu to make the menu disappear.
-  GestureDetector tapOutside() {
-    return GestureDetector(
-      onTap: () {
-        hidePhotoOptions();
-      },
-      child: Container(
-        alignment: Alignment.center,
-        width: MediaQuery.of(context).size.width,
-        color: Colors.black.withOpacity(0.4),
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height,
-        ),
-      ),
-    );
-  }
-
   // Container holding photo options menu
-  Container photOptionsMenu() {
+  Container photoOptionsMenu() {
     return Container(
-        alignment: Alignment.center,
         width: MediaQuery.of(context).size.width,
         color: ksecondary,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               TextButton(
                 onPressed: () {
@@ -84,7 +71,7 @@ class _NewPhotoState extends State<NewPhoto> {
                 children: <Widget>[
                   TextButton(
                     onPressed: () {
-                      hidePhotoOptions();
+                      Navigator.pop(context);
                     },
                     style: TextButton.styleFrom(primary: kprimaryLight),
                     child: const Text("Cancel"),
@@ -98,22 +85,11 @@ class _NewPhotoState extends State<NewPhoto> {
 
   // Overlay that shows the photo options menu
   void showPhotoOptions() {
-    entry = OverlayEntry(
-        builder: (context) => Positioned(
-            bottom: 0,
-            child: Column(children: [
-              tapOutside(),
-              photOptionsMenu(),
-            ])));
-
-    final overlay = Overlay.of(context)!;
-    overlay.insert(entry!);
-  }
-
-  // Function that hides photo options menu
-  void hidePhotoOptions() {
-    entry?.remove();
-    entry = null;
+    showModalBottomSheet<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return photoOptionsMenu();
+        });
   }
 
   // Handles the "Add Photo" icon button.
@@ -146,6 +122,7 @@ class _NewPhotoState extends State<NewPhoto> {
     );
   }
 
+  // Displays image in a card widget along with photo options.
   Card imageDisplay() {
     return Card(
         child: Padding(
