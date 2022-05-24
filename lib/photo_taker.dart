@@ -26,6 +26,7 @@ class _NewPhotoState extends State<NewPhoto> {
 
       final imageTemporary = File(image.path);
       setState(() => this.image = imageTemporary);
+      hidePhotoOptions();
     } on PlatformException catch (e) {
       // TODO: Create UI to let user know of exception.
       print("Failed to pick image $e");
@@ -41,7 +42,7 @@ class _NewPhotoState extends State<NewPhoto> {
       child: Container(
         alignment: Alignment.center,
         width: MediaQuery.of(context).size.width,
-        color: Colors.black.withOpacity(0.2),
+        color: Colors.black.withOpacity(0.4),
         child: SizedBox(
           height: MediaQuery.of(context).size.height,
         ),
@@ -145,10 +146,46 @@ class _NewPhotoState extends State<NewPhoto> {
     );
   }
 
+  Card imageDisplay() {
+    return Card(
+        child: Padding(
+      padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          Image.file(image!),
+          OverflowBar(
+            alignment: MainAxisAlignment.end,
+            children: <Widget>[
+              IconButton(
+                icon: const Icon(
+                  Icons.photo_camera,
+                  color: kprimary,
+                ),
+                onPressed: () {
+                  showPhotoOptions();
+                },
+              ),
+              IconButton(
+                icon: const Icon(
+                  Icons.cancel,
+                  color: kprimary,
+                ),
+                onPressed: () {
+                  setState(() {
+                    image = null;
+                  });
+                },
+              )
+            ],
+          )
+        ],
+      ),
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
-    return image == null
-        ? addPhotoButton()
-        : Image.file(image!, width: 150, height: 150, fit: BoxFit.cover);
+    return image == null ? addPhotoButton() : imageDisplay();
   }
 }
