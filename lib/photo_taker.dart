@@ -1,4 +1,6 @@
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'colors.dart';
@@ -12,6 +14,23 @@ class NewPhoto extends StatefulWidget {
 
 class _NewPhotoState extends State<NewPhoto> {
   OverlayEntry? entry;
+
+  // Stores taken image
+  File? image;
+
+  // Function handles selectaion of image through image_picker package
+  Future pickImage(ImageSource source) async {
+    try {
+      final image = await ImagePicker().pickImage(source: source);
+      if (image == null) return;
+
+      final imageTemporary = File(image.path);
+      setState(() => this.image = imageTemporary);
+    } on PlatformException catch (e) {
+      // TODO: Create UI to let user know of exception.
+      print("Failed to pick image $e");
+    }
+  }
 
   // Handles a tap outside overlay menu to make the menu disappear.
   GestureDetector tapOutside() {
@@ -41,14 +60,20 @@ class _NewPhotoState extends State<NewPhoto> {
           child: Column(
             children: [
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  // Calls pickImage function to select photo through camera
+                  pickImage(ImageSource.camera);
+                },
                 style: TextButton.styleFrom(
                   minimumSize: const Size.fromHeight(50.0),
                 ),
                 child: const Text("Take Photo"),
               ),
               TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    // Calls pickImage function to select photo through gallery
+                    pickImage(ImageSource.gallery);
+                  },
                   style: TextButton.styleFrom(
                     minimumSize: const Size.fromHeight(50.0),
                   ),
@@ -90,8 +115,8 @@ class _NewPhotoState extends State<NewPhoto> {
     entry = null;
   }
 
-  @override
-  Widget build(BuildContext context) {
+  // Handles the "Add Photo" icon button.
+  Column addPhotoButton() {
     return Column(
       // Add photo button
       children: [
@@ -118,5 +143,12 @@ class _NewPhotoState extends State<NewPhoto> {
         )
       ],
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return image == null
+        ? addPhotoButton()
+        : Image.file(image!, width: 150, height: 150, fit: BoxFit.cover);
   }
 }
