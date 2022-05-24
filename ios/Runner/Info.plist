@@ -45,5 +45,9 @@
 	<false/>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>To select photos used in the dish log</string>
+	<key>NSCameraUsageDescription</key>
+	<string>To take photos used in the dish log</string>
 </dict>
 </plist>
