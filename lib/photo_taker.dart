@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -37,7 +38,7 @@ class _NewPhotoState extends State<NewPhoto> {
     }
   }
 
-  // Container holding photo options menu
+  // Container holding photo options menu for Android
   Container photoOptionsMenu() {
     return Container(
         width: MediaQuery.of(context).size.width,
@@ -83,13 +84,39 @@ class _NewPhotoState extends State<NewPhoto> {
         ));
   }
 
+  // Action sheet showing photo taking options for ios
+  CupertinoActionSheet photoOptionsMenuIOS() {
+    return CupertinoActionSheet(
+      actions: [
+        CupertinoActionSheetAction(
+            onPressed: () {
+              pickImage(ImageSource.camera);
+            },
+            child: const Text("Take photo")),
+        CupertinoActionSheetAction(
+            onPressed: () {
+              pickImage(ImageSource.gallery);
+            },
+            child: const Text("Choose Photo"))
+      ],
+    );
+  }
+
   // Overlay that shows the photo options menu
   void showPhotoOptions() {
-    showModalBottomSheet<void>(
-        context: context,
-        builder: (BuildContext context) {
-          return photoOptionsMenu();
-        });
+    if (Platform.isIOS) {
+      showCupertinoModalPopup<void>(
+          context: context,
+          builder: (BuildContext context) {
+            return photoOptionsMenuIOS();
+          });
+    } else if (Platform.isAndroid) {
+      showModalBottomSheet<void>(
+          context: context,
+          builder: (BuildContext context) {
+            return photoOptionsMenu();
+          });
+    }
   }
 
   // Handles the "Add Photo" icon button.
