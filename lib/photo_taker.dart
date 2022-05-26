@@ -19,6 +19,13 @@ class _NewPhotoState extends State<NewPhoto> {
   // Stores taken image
   File? image;
 
+  // Closes an overlay after widgets rebuilt.
+  void closeOverlay() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Navigator.pop(context);
+    });
+  }
+
   // Function handles selectaion of image through image_picker package
   Future pickImage(ImageSource source) async {
     try {
@@ -29,9 +36,7 @@ class _NewPhotoState extends State<NewPhoto> {
       setState(() => this.image = imageTemporary);
 
       // Closes photo options menu after widget tree rebuilt.
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.pop(context);
-      });
+      closeOverlay();
     } on PlatformException catch (e) {
       // TODO: Create UI to let user know of exception.
       print("Failed to pick image $e");
@@ -119,6 +124,75 @@ class _NewPhotoState extends State<NewPhoto> {
     }
   }
 
+  // Confirm photo deletion alert dialog for Android
+  AlertDialog confirmDelete() {
+    return AlertDialog(
+      title: const Text("Delete the photo?"),
+      content: const Text("It will be lost forever!"),
+      actions: <Widget>[
+        TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text("Cancel")),
+        TextButton(
+            onPressed: () {
+              setState(() {
+                image = null;
+              });
+              // Closes confirmation menu after widgets rebuilt.
+              closeOverlay();
+            },
+            child: const Text("Confirm"))
+      ],
+    );
+  }
+
+  // Confirm photo deletion alert dialog for IOS
+  CupertinoAlertDialog confirmDeleteIOS() {
+    return CupertinoAlertDialog(
+      title: const Text("Delete the photo?"),
+      content: const Text("It will be lost forever!"),
+      actions: <CupertinoDialogAction>[
+        CupertinoDialogAction(
+          isDefaultAction: true,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text("No"),
+        ),
+        CupertinoDialogAction(
+            isDefaultAction: false,
+            onPressed: () {
+              setState(() {
+                image = null;
+              });
+              // Closes confirmation menu after widgets rebuilt
+              closeOverlay();
+            },
+            child: const Text("Yes"))
+      ],
+    );
+  }
+
+  // Asks user to confirm whether to delete photo. Implementation is
+  // platform specific.
+  void showCancelConfirm() {
+    if (Platform.isIOS) {
+      showCupertinoModalPopup<void>(
+          context: context,
+          builder: (BuildContext context) {
+            return confirmDeleteIOS();
+          });
+    } else if (Platform.isAndroid) {
+      showDialog<void>(
+          context: context,
+          builder: (BuildContext context) {
+            return confirmDelete();
+          });
+    }
+  }
+
   // Handles the "Add Photo" icon button.
   Column addPhotoButton() {
     return Column(
@@ -176,9 +250,7 @@ class _NewPhotoState extends State<NewPhoto> {
                   color: kprimary,
                 ),
                 onPressed: () {
-                  setState(() {
-                    image = null;
-                  });
+                  showCancelConfirm();
                 },
               )
             ],
