@@ -127,7 +127,10 @@ class _NewPhotoState extends State<NewPhoto> {
   // Confirm photo deletion alert dialog for Android
   AlertDialog confirmDelete() {
     return AlertDialog(
-      title: const Text("Delete the photo?"),
+      title: const Text(
+        "Delete the photo?",
+        style: TextStyle(color: Colors.red),
+      ),
       content: const Text("It will be lost forever!"),
       actions: <Widget>[
         TextButton(
