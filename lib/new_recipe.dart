@@ -1,9 +1,26 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'colors.dart';
 import 'photo_taker.dart';
+import 'dish.dart';
+import 'data.dart';
+
+class ImagePath with ChangeNotifier {
+  String? path;
+
+  void addPath(String newPath) {
+    path = newPath;
+    notifyListeners();
+  }
+
+  void clearPath(String newPath) {
+    path = null;
+    notifyListeners();
+  }
+}
 
 class NewRecipePage extends StatefulWidget {
   const NewRecipePage({Key? key}) : super(key: key);
@@ -22,10 +39,12 @@ class _NewRecipePageState extends State<NewRecipePage> {
           appBar: AppBar(
             title: const Text("New Recipe"),
           ),
-          body: const Padding(
-            padding: EdgeInsets.fromLTRB(7.0, 9.0, 7.0, 9.0),
-            child: NewRecipeForm(),
-          )),
+          body: Padding(
+              padding: EdgeInsets.fromLTRB(7.0, 9.0, 7.0, 9.0),
+              child: ChangeNotifierProvider(
+                create: (context) => ImagePath(),
+                child: NewRecipeForm(),
+              ))),
     );
   }
 }
@@ -39,6 +58,13 @@ class NewRecipeForm extends StatefulWidget {
 
 class _NewRecipeFormState extends State<NewRecipeForm> {
   final _formKey = GlobalKey<FormState>();
+
+  final IDStorage storage = IDStorage();
+  String? test;
+
+  // TextEditingControllers controlling text form fields.
+  TextEditingController dishName = TextEditingController();
+  TextEditingController dishDescription = TextEditingController();
 
   // Styling for text used for labels
   final TextStyle _labelStyle = const TextStyle(
@@ -77,6 +103,7 @@ class _NewRecipeFormState extends State<NewRecipeForm> {
           ),
           TextFormField(
             // Recipe name field
+            controller: dishName,
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return "Please enter a recipe name";
@@ -97,6 +124,7 @@ class _NewRecipeFormState extends State<NewRecipeForm> {
           ),
           TextFormField(
             // Recipe description field
+            controller: dishDescription,
             decoration: createInput(
                 "Description",
                 const Icon(
@@ -115,6 +143,8 @@ class _NewRecipeFormState extends State<NewRecipeForm> {
                   const SnackBar(content: Text('Processing Data')),
                 );
               }
+
+              print(Provider.of<ImagePath>(context, listen: false).path);
             },
             child: const Text(
               "SUBMIT",
