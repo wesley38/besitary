@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'colors.dart';
+import 'new_recipe.dart';
 
 class NewPhoto extends StatefulWidget {
   const NewPhoto({Key? key}) : super(key: key);
@@ -33,7 +36,11 @@ class _NewPhotoState extends State<NewPhoto> {
       if (image == null) return;
       // Storing selected / taken image
       final imageTemporary = File(image.path);
+
       setState(() => this.image = imageTemporary);
+
+      // Updates image path
+      saveImageTemp();
 
       // Closes photo options menu after widget tree rebuilt.
       closeOverlay();
@@ -41,6 +48,19 @@ class _NewPhotoState extends State<NewPhoto> {
       // TODO: Create UI to let user know of exception.
       print("Failed to pick image $e");
     }
+  }
+
+  // Accesses the ImagePath state and updates the path variable.
+  void saveImageTemp() {
+    Provider.of<ImagePath>(context, listen: false).addPath(image!.path);
+  }
+
+  // Returns path to application documents directory.
+  Future<String> getDocumentsPath() async {
+    final Directory directory = await getApplicationDocumentsDirectory();
+    final String path = directory.path;
+
+    return path;
   }
 
   // Container holding photo options menu for Android
