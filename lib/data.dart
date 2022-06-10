@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:json_serializable/json_serializable.dart';
+//import 'package:json_serializable/json_serializable.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:json_annotation/json_annotation.dart';
 
